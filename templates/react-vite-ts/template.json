@@ -18,7 +18,8 @@
     "tsconfig.node.json",
     "vite.config.ts",
     "vitest.config.ts",
-    "index.html"
+    "index.html",
+    "src/main.tsx"
   ],
   "editableFiles": [
     "src/**",
@@ -35,6 +36,8 @@
     "Do not generate a backend, API proxy, server routes, or /api calls unless the user explicitly asks for a backend.",
     "For public browser-safe APIs, call the public API directly from frontend service modules.",
     "Use the generated preview as the visual contract for frontend layout, copy, color system, and interaction states.",
+    "The protected src/main.tsx already imports ./index.css and renders App. Generate src/App.tsx, src/index.css, components, services, types, and tests around that entrypoint.",
+    "Do not use Tailwind or utility CSS classes unless Tailwind is explicitly installed and configured. With this template, define every visual class used by JSX in src/index.css.",
     "Do not regenerate protected package/config files unless the user explicitly asks for dependency or config changes.",
     "Generate application code under src and README usage notes at README.md."
   ]

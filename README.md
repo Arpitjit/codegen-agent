@@ -112,6 +112,8 @@ node ./src/cli.mjs generate \
   --skip-preview
 ```
 
+For React/Vite frontend projects, verification also checks that generated JSX and CSS agree. If Tailwind is not fully configured, the generator expects semantic class names and fails verification when JSX uses undefined utility classes such as `text-white`, `rounded-xl`, or `px-4`.
+
 The API scripts use the `node-express-ecs-ts` template, which provides protected package, TypeScript, Vitest, Dockerfile, `.dockerignore`, request logging, and centralized error handling files. After generation, they run a Docker smoke stage when Docker is available:
 
 ```bash

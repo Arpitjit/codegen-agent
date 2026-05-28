@@ -54,6 +54,8 @@ Project consistency guardrails:
 - Every imported package, reporter, plugin, middleware, or framework helper must be declared in dependencies or devDependencies.
 - Tests and services must agree on public error messages and response shapes from the manifest.
 - Prefer simple stable test tooling over fancy reporters or UI tooling.
+- For frontend projects without Tailwind installed and configured, do not use Tailwind utility classes. Use semantic class names and define every class used in JSX in the generated CSS.
+- Frontend entrypoints must import the global stylesheet exactly once from the entrypoint or another always-loaded root module.
 `.trim();
 
 function usage() {
@@ -607,6 +609,8 @@ ${GENERATION_GUARDRAILS}
 - If a template is selected, plan mainly editable app-specific files matching editableFiles.
 - If the selected template is frontend-only or the intent says no backend is required, do not plan backend files, server routes, API proxy files, or /api adapter code.
 - For UI/frontend files, use the preview contract as a dependency for layout, content, colors, and interaction states.
+- For frontend templates without Tailwind, plan a real global stylesheet such as src/index.css and make visual components depend on it or be generated in the same batch.
+- Do not plan protected entrypoints such as src/main.tsx when the template already provides them.
 - Planned files may depend on protected template files, but protected files do not need generation nodes.
 - Do not include generated code.
 - Do not include prose outside JSON.
@@ -917,6 +921,8 @@ Rules:
 - If previous verification feedback is provided, fix only this file.
 - For UI/frontend files, implement the preview contract in framework-native code. Preserve its layout intent, copy, color system, visual hierarchy, and states unless the manifest says otherwise.
 - If the selected template is frontend-only or the intent says no backend is required, do not call /api routes or assume a local backend. Call browser-safe public APIs directly from frontend service modules.
+- For frontend files without Tailwind configured, do not use utility class names like flex, grid, px-4, text-white, rounded-xl, md:grid-cols-4, or bg-sky-500. Use semantic class names and define them in the generated CSS.
+- If generating JSX and CSS separately, keep class names exactly synchronized. Every visual class used in JSX must exist in the CSS file.
 - Apply these guardrails:
 ${GENERATION_GUARDRAILS}
 - If a template is selected, preserve its foundation and follow its structure. Do not rewrite protected files unless this node is explicitly for that protected file.
@@ -1028,6 +1034,8 @@ Rules:
 - If a template is selected, preserve its foundation and follow its structure. Do not rewrite protected files.
 - For UI/frontend files, implement the preview contract in framework-native code. Preserve its layout intent, copy, color system, visual hierarchy, and states unless the manifest says otherwise.
 - If the selected template is frontend-only or the intent says no backend is required, do not call /api routes or assume a local backend. Call browser-safe public APIs directly from frontend service modules.
+- For frontend files without Tailwind configured, do not use utility class names like flex, grid, px-4, text-white, rounded-xl, md:grid-cols-4, or bg-sky-500. Use semantic class names and define them in the generated CSS.
+- If generating JSX and CSS together, ensure every visual class used in JSX exists in the CSS file.
 - Apply these guardrails:
 ${GENERATION_GUARDRAILS}
 
@@ -1536,7 +1544,170 @@ async function verifyProject({ projectDir, install }) {
     };
   }
 
+  const frontendStyleValidation = await validateFrontendStyles(projectDir, packageJson);
+  combined += `\n$ validate frontend styles\n${frontendStyleValidation.output}\n`;
+  if (!frontendStyleValidation.ok) {
+    return {
+      ok: false,
+      commands: [...commands.map(([name, args]) => `${name} ${args.join(" ")}`), "validate frontend styles"],
+      output: combined
+    };
+  }
+
   return { ok: true, commands: commands.map(([name, args]) => `${name} ${args.join(" ")}`), output: combined };
+}
+
+async function validateFrontendStyles(projectDir, packageJson) {
+  const srcDir = path.join(projectDir, "src");
+  if (!existsSync(srcDir)) {
+    return { ok: true, output: "No src directory found; frontend style validation skipped." };
+  }
+
+  const allFiles = await walkProjectFiles(projectDir);
+  const componentFiles = allFiles.filter((filePath) => /\.(tsx|jsx)$/.test(filePath));
+  if (componentFiles.length === 0) {
+    return { ok: true, output: "No JSX/TSX files found; frontend style validation skipped." };
+  }
+
+  const cssFiles = allFiles.filter((filePath) => filePath.startsWith("src/") && /\.css$/.test(filePath));
+  if (cssFiles.length === 0) {
+    return {
+      ok: false,
+      output: "Frontend JSX/TSX files exist, but no src/*.css stylesheet was generated. Generate and import a global stylesheet."
+    };
+  }
+
+  const hasTailwindDependency = Boolean(packageJson.dependencies?.tailwindcss || packageJson.devDependencies?.tailwindcss);
+  const hasTailwindConfig = existsSync(path.join(projectDir, "tailwind.config.js"))
+    || existsSync(path.join(projectDir, "tailwind.config.ts"));
+  const hasTailwind = hasTailwindDependency && hasTailwindConfig;
+
+  const cssContents = [];
+  for (const filePath of cssFiles) {
+    cssContents.push(await readFile(path.join(projectDir, filePath), "utf8"));
+  }
+  if (!hasTailwind && cssContents.some((content) => /@tailwind\s+(base|components|utilities)/.test(content))) {
+    return {
+      ok: false,
+      output: "CSS uses Tailwind directives, but Tailwind is not fully configured with both dependency and local tailwind.config. Generate plain CSS or add complete Tailwind setup."
+    };
+  }
+  const definedClasses = extractCssClassNames(cssContents.join("\n"));
+  const usedClassMap = new Map();
+  const cssImports = [];
+
+  for (const filePath of componentFiles) {
+    const content = await readFile(path.join(projectDir, filePath), "utf8");
+    for (const importPath of extractCssImports(content)) {
+      cssImports.push({ filePath, importPath });
+    }
+    for (const className of extractJsxClassNames(content)) {
+      if (!usedClassMap.has(className)) {
+        usedClassMap.set(className, new Set());
+      }
+      usedClassMap.get(className).add(filePath);
+    }
+  }
+
+  if (cssImports.length === 0) {
+    return {
+      ok: false,
+      output: "A stylesheet exists, but no JSX/TSX entry or root component imports CSS. Import the global stylesheet from src/main.tsx or src/App.tsx."
+    };
+  }
+
+  if (hasTailwind) {
+    return { ok: true, output: "Tailwind is configured; class coverage validation skipped." };
+  }
+
+  const usedClasses = [...usedClassMap.keys()].filter((className) => !isIgnoredClassToken(className));
+  const undefinedClasses = usedClasses.filter((className) => !definedClasses.has(cssClassSelectorName(className)));
+  const utilityLikeClasses = undefinedClasses.filter(isLikelyUtilityClass);
+
+  if (undefinedClasses.length > 8 || utilityLikeClasses.length > 4) {
+    const examples = undefinedClasses.slice(0, 30).map((className) => {
+      const files = [...usedClassMap.get(className)].slice(0, 3).join(", ");
+      return `- ${className} (${files})`;
+    }).join("\n");
+    return {
+      ok: false,
+      output: [
+        "Frontend CSS validation failed.",
+        "The project does not configure Tailwind, but JSX uses many classes that are not defined in generated CSS.",
+        "Generate semantic CSS classes and keep JSX className values synchronized with src/*.css.",
+        "Undefined class examples:",
+        examples
+      ].join("\n")
+    };
+  }
+
+  return {
+    ok: true,
+    output: `Found ${cssFiles.length} stylesheet(s), ${cssImports.length} CSS import(s), and ${undefinedClasses.length} undefined JSX class token(s).`
+  };
+}
+
+function extractCssImports(content) {
+  return [...content.matchAll(/import\s+["']([^"']+\.css)["'];?/g)].map((match) => match[1]);
+}
+
+function extractCssClassNames(content) {
+  const classNames = new Set();
+  for (const match of content.matchAll(/\.(-?[_a-zA-Z][\w-]*)/g)) {
+    classNames.add(match[1]);
+  }
+  return classNames;
+}
+
+function extractJsxClassNames(content) {
+  const classes = [];
+  const patterns = [
+    /className\s*=\s*"([^"]*)"/g,
+    /className\s*=\s*'([^']*)'/g,
+    /className\s*=\s*{\s*`([\s\S]*?)`\s*}/g,
+    /className\s*=\s*{\s*"([^"]*)"\s*}/g,
+    /className\s*=\s*{\s*'([^']*)'\s*}/g
+  ];
+
+  for (const pattern of patterns) {
+    for (const match of content.matchAll(pattern)) {
+      classes.push(...splitClassTokens(match[1].replace(/\$\{[\s\S]*?\}/g, " ")));
+    }
+  }
+
+  for (const match of content.matchAll(/className\s*=\s*{([^}]+)}/g)) {
+    const expression = match[1];
+    for (const literal of expression.matchAll(/["'`]([^"'`]+)["'`]/g)) {
+      classes.push(...splitClassTokens(literal[1]));
+    }
+  }
+
+  return [...new Set(classes)];
+}
+
+function splitClassTokens(value) {
+  return value
+    .split(/\s+/)
+    .map((token) => token.trim())
+    .filter(Boolean)
+    .filter((token) => !/[${};()]/.test(token));
+}
+
+function cssClassSelectorName(className) {
+  return className.replace(/\\/g, "").split(":").pop();
+}
+
+function isIgnoredClassToken(className) {
+  return className.startsWith("http")
+    || className.includes("/")
+    || className.includes("[")
+    || className.includes("]");
+}
+
+function isLikelyUtilityClass(className) {
+  const base = cssClassSelectorName(className);
+  return /^(absolute|relative|fixed|sticky|block|inline|flex|grid|hidden|items-|justify-|content-|self-|gap-|space-[xy]-|w-|h-|min-h-|max-w-|max-h-|p[trblxy]?-\d|m[trblxy]?-\d|text-|font-|tracking-|leading-|bg-|from-|via-|to-|border|border-|rounded|rounded-|shadow|opacity-|transition|duration-|ease-|hover:|focus:|disabled:|sm:|md:|lg:|xl:|z-|top-|right-|bottom-|left-|inset-|overflow-|object-|animate-)/.test(base)
+    || ["flex", "grid", "hidden", "relative", "absolute", "block", "inline-block", "text-left", "text-right", "mx-auto", "w-full"].includes(base);
 }
 
 async function validateStartScriptTarget(projectDir, packageJson) {
