@@ -1,0 +1,41 @@
+{
+  "id": "react-vite-ts",
+  "kind": "frontend",
+  "stack": [
+    "typescript",
+    "react",
+    "vite",
+    "vitest",
+    "npm"
+  ],
+  "source": [
+    "Vite React TypeScript starter",
+    "Vitest local project configuration"
+  ],
+  "protectedFiles": [
+    "package.json",
+    "tsconfig.json",
+    "tsconfig.node.json",
+    "vite.config.ts",
+    "vitest.config.ts",
+    "index.html"
+  ],
+  "editableFiles": [
+    "src/**",
+    "README.md"
+  ],
+  "verification": {
+    "install": "npm install",
+    "build": "npm run build",
+    "test": "npm test",
+    "dev": "npm run dev"
+  },
+  "instructions": [
+    "Use this template as the foundation for frontend-only React plus Vite projects.",
+    "Do not generate a backend, API proxy, server routes, or /api calls unless the user explicitly asks for a backend.",
+    "For public browser-safe APIs, call the public API directly from frontend service modules.",
+    "Use the generated preview as the visual contract for frontend layout, copy, color system, and interaction states.",
+    "Do not regenerate protected package/config files unless the user explicitly asks for dependency or config changes.",
+    "Generate application code under src and README usage notes at README.md."
+  ]
+}

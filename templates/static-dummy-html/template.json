@@ -1,0 +1,23 @@
+{
+  "id": "static-dummy-html",
+  "kind": "static-preview",
+  "stack": [
+    "html",
+    "css",
+    "javascript"
+  ],
+  "source": [
+    "local handcrafted preview template"
+  ],
+  "protectedFiles": [
+    "index.html"
+  ],
+  "editableFiles": [],
+  "verification": {
+    "preview": "open index.html in a browser"
+  },
+  "instructions": [
+    "This template is a local no-API preview artifact.",
+    "It is useful for quickly validating that the user can preview generated HTML output."
+  ]
+}

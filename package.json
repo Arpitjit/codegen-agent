@@ -1,0 +1,16 @@
+{
+  "name": "initiative-codegen-agent",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "initiative-codegen": "./src/cli.mjs"
+  },
+  "scripts": {
+    "start": "node ./src/cli.mjs",
+    "check": "node --check ./src/cli.mjs"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "id": "node-express-ecs-ts",
+  "kind": "backend",
+  "stack": [
+    "nodejs20",
+    "typescript",
+    "express",
+    "vitest",
+    "docker",
+    "ecs-fargate",
+    "npm"
+  ],
+  "source": [
+    "Node.js 20 Docker image",
+    "Express TypeScript backend conventions",
+    "Vitest local project configuration",
+    "ECS Fargate container entrypoint conventions"
+  ],
+  "protectedFiles": [
+    "package.json",
+    "tsconfig.json",
+    "vitest.config.ts",
+    "Dockerfile",
+    ".dockerignore",
+    "src/common/errors.ts",
+    "src/common/response.ts",
+    "src/middleware/errorHandler.ts",
+    "src/middleware/requestLogger.ts"
+  ],
+  "editableFiles": [
+    "src/app.ts",
+    "src/server.ts",
+    "src/config/**",
+    "src/models/**",
+    "src/data/**",
+    "src/repositories/**",
+    "src/services/**",
+    "src/controllers/**",
+    "src/routes/**",
+    "tests/**",
+    "README.md"
+  ],
+  "verification": {
+    "install": "npm install",
+    "build": "npm run build",
+    "test": "npm test",
+    "start": "npm start",
+    "dockerBuild": "docker build -t generated-api .",
+    "dockerRun": "docker run --rm -p 3000:3000 generated-api"
+  },
+  "instructions": [
+    "Use this template as the foundation for Express TypeScript APIs intended for ECS Fargate.",
+    "Do not regenerate protected package/config/Docker files unless the user explicitly asks for dependency or Docker changes.",
+    "Use the protected requestLogger and errorHandler middleware from src/middleware.",
+    "Use the protected success and error response helpers from src/common/response.ts.",
+    "Build output is dist/server.js because tsconfig rootDir is src and outDir is dist.",
+    "The Dockerfile is known-good for Node.js 20, npm ci, TypeScript build, and npm start."
+  ]
+}

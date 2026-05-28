@@ -1,0 +1,92 @@
+{
+  "templates": [
+    {
+      "id": "official-vite-react-ts",
+      "kind": "frontend",
+      "stack": [
+        "react",
+        "vite",
+        "typescript",
+        "npm"
+      ],
+      "sourceType": "scaffold-command",
+      "source": "npm create vite@latest -- --template react-ts",
+      "command": "npm",
+      "args": [
+        "create",
+        "vite@latest",
+        "{{targetDir}}",
+        "--",
+        "--template",
+        "react-ts"
+      ],
+      "protectedFiles": [
+        "package.json",
+        "tsconfig.json",
+        "tsconfig.app.json",
+        "tsconfig.node.json",
+        "vite.config.ts",
+        "index.html"
+      ],
+      "editableFiles": [
+        "src/**",
+        "README.md"
+      ],
+      "verification": {
+        "install": "npm install",
+        "build": "npm run build",
+        "dev": "npm run dev"
+      },
+      "instructions": [
+        "Official Vite React TypeScript scaffold cached locally.",
+        "Use for frontend-only React/Vite projects or as a source for composed templates.",
+        "Do not regenerate protected Vite/TypeScript config files unless explicitly requested."
+      ]
+    },
+    {
+      "id": "official-nextjs-app-ts",
+      "kind": "frontend",
+      "stack": [
+        "nextjs",
+        "react",
+        "typescript",
+        "npm"
+      ],
+      "sourceType": "scaffold-command",
+      "source": "npx create-next-app@latest",
+      "command": "npx",
+      "args": [
+        "create-next-app@latest",
+        "{{targetDir}}",
+        "--typescript",
+        "--eslint",
+        "--app",
+        "--src-dir",
+        "--no-tailwind",
+        "--import-alias",
+        "@/*",
+        "--use-npm"
+      ],
+      "protectedFiles": [
+        "package.json",
+        "tsconfig.json",
+        "next.config.ts",
+        "eslint.config.mjs"
+      ],
+      "editableFiles": [
+        "src/**",
+        "public/**",
+        "README.md"
+      ],
+      "verification": {
+        "install": "npm install",
+        "build": "npm run build",
+        "dev": "npm run dev"
+      },
+      "instructions": [
+        "Official Next.js App Router TypeScript scaffold cached locally.",
+        "Use for Next.js frontend or full-stack Next.js projects."
+      ]
+    }
+  ]
+}

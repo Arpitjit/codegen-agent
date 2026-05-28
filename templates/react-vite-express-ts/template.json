@@ -1,0 +1,48 @@
+{
+  "id": "react-vite-express-ts",
+  "kind": "fullstack",
+  "stack": [
+    "typescript",
+    "react",
+    "vite",
+    "express",
+    "vitest",
+    "npm-workspaces"
+  ],
+  "source": [
+    "Vite React TypeScript starter",
+    "Express TypeScript backend conventions",
+    "Vitest local project configuration",
+    "npm workspaces"
+  ],
+  "protectedFiles": [
+    "package.json",
+    "backend/package.json",
+    "backend/tsconfig.json",
+    "backend/vitest.config.ts",
+    "frontend/package.json",
+    "frontend/tsconfig.json",
+    "frontend/tsconfig.node.json",
+    "frontend/vite.config.ts",
+    "frontend/index.html"
+  ],
+  "editableFiles": [
+    "backend/src/**",
+    "backend/tests/**",
+    "frontend/src/**",
+    "README.md"
+  ],
+  "verification": {
+    "install": "npm install",
+    "build": "npm run build",
+    "test": "npm test",
+    "dev": "npm run dev"
+  },
+  "instructions": [
+    "Use this template as the foundation for full-stack React plus Express projects.",
+    "Do not regenerate protected package/config files unless the user explicitly asks for dependency or config changes.",
+    "Generate backend application modules under backend/src and backend/tests.",
+    "Generate frontend application code under frontend/src.",
+    "Root scripts already install, build, test, and run both workspaces."
+  ]
+}

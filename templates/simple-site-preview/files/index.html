@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Northstar Studio</title>
+    <style>
+      :root {
+        --bg: #f7f8fa;
+        --ink: #121826;
+        --muted: #637083;
+        --panel: #ffffff;
+        --line: #dfe5ee;
+        --accent: #0f766e;
+        --accent-dark: #134e4a;
+        --warm: #b45309;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: var(--ink);
+        background: var(--bg);
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        border-bottom: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(14px);
+      }
+
+      .wrap {
+        width: min(1180px, calc(100% - 32px));
+        margin: 0 auto;
+      }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        min-height: 72px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 800;
+      }
+
+      .logo {
+        display: grid;
+        place-items: center;
+        width: 38px;
+        height: 38px;
+        border-radius: 8px;
+        color: #ffffff;
+        background: var(--accent);
+      }
+
+      .links {
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 42px;
+        padding: 0 18px;
+        border-radius: 8px;
+        color: #ffffff;
+        background: var(--accent);
+        font-weight: 700;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: 1.05fr 0.95fr;
+        gap: 36px;
+        align-items: center;
+        min-height: calc(100vh - 72px);
+        padding: 54px 0 38px;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 18px;
+        color: var(--accent-dark);
+        font-weight: 800;
+      }
+
+      h1 {
+        margin: 0;
+        max-width: 780px;
+        font-size: clamp(2.7rem, 7vw, 6.9rem);
+        line-height: 0.9;
+        letter-spacing: 0;
+      }
+
+      .lead {
+        max-width: 640px;
+        margin: 24px 0 0;
+        color: var(--muted);
+        font-size: 1.12rem;
+        line-height: 1.75;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 30px;
+      }
+
+      .secondary {
+        color: var(--ink);
+        background: #ffffff;
+        border: 1px solid var(--line);
+      }
+
+      .showcase {
+        min-height: 520px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background:
+          linear-gradient(145deg, rgba(15, 118, 110, 0.14), rgba(180, 83, 9, 0.08)),
+          url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1400&q=80");
+        background-size: cover;
+        background-position: center;
+        box-shadow: 0 20px 60px rgba(18, 24, 38, 0.14);
+      }
+
+      .section {
+        padding: 64px 0;
+        border-top: 1px solid var(--line);
+      }
+
+      .section h2 {
+        margin: 0 0 24px;
+        font-size: clamp(1.8rem, 4vw, 3rem);
+        letter-spacing: 0;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .card {
+        min-height: 210px;
+        padding: 24px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+      }
+
+      .card span {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        color: #ffffff;
+        background: var(--warm);
+        font-weight: 800;
+      }
+
+      .card h3 {
+        margin: 18px 0 8px;
+      }
+
+      .card p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.65;
+      }
+
+      footer {
+        padding: 28px 0;
+        color: var(--muted);
+        border-top: 1px solid var(--line);
+      }
+
+      @media (max-width: 860px) {
+        .links {
+          display: none;
+        }
+
+        .hero,
+        .grid {
+          grid-template-columns: 1fr;
+        }
+
+        .hero {
+          min-height: auto;
+        }
+
+        .showcase {
+          min-height: 360px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="wrap nav">
+        <a class="brand" href="#">
+          <span class="logo">NS</span>
+          <span>Northstar Studio</span>
+        </a>
+        <nav class="links" aria-label="Primary navigation">
+          <a href="#services">Services</a>
+          <a href="#work">Work</a>
+          <a href="#contact">Contact</a>
+        </nav>
+        <a class="button" href="#contact">Start a Project</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="wrap hero">
+        <div>
+          <div class="eyebrow">Strategy, design, and launch</div>
+          <h1>Digital products with a sharper point of view.</h1>
+          <p class="lead">
+            Northstar Studio helps teams turn fuzzy ideas into elegant websites, dashboards, and product experiences that feel clear from the first click.
+          </p>
+          <div class="actions">
+            <a class="button" href="#services">Explore Services</a>
+            <a class="button secondary" href="#work">View Work</a>
+          </div>
+        </div>
+        <div class="showcase" role="img" aria-label="Modern studio workspace"></div>
+      </section>
+
+      <section id="services" class="section">
+        <div class="wrap">
+          <h2>What we make</h2>
+          <div class="grid">
+            <article class="card">
+              <span>1</span>
+              <h3>Launch Sites</h3>
+              <p>Focused websites that explain, convert, and give your product a real first impression.</p>
+            </article>
+            <article class="card">
+              <span>2</span>
+              <h3>Product UI</h3>
+              <p>Clean dashboards and application screens built for repeated use, not just presentation.</p>
+            </article>
+            <article class="card">
+              <span>3</span>
+              <h3>Prototype Systems</h3>
+              <p>Clickable experiences and code-ready flows for teams that need momentum before scale.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="work" class="section">
+        <div class="wrap">
+          <h2>Designed to feel obvious</h2>
+          <p class="lead">
+            This static preview is intentionally simple: a real page, a real layout, and a direct file link you can open locally.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <footer id="contact">
+      <div class="wrap">Northstar Studio preview artifact. Generated locally.</div>
+    </footer>
+  </body>
+</html>

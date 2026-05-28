@@ -1,0 +1,22 @@
+{
+  "id": "simple-site-preview",
+  "kind": "static-site",
+  "stack": [
+    "html",
+    "css",
+    "javascript"
+  ],
+  "source": [
+    "local handcrafted static site template"
+  ],
+  "protectedFiles": [
+    "index.html"
+  ],
+  "editableFiles": [],
+  "verification": {
+    "preview": "open index.html in a browser"
+  },
+  "instructions": [
+    "A simple static website that can be previewed directly from the filesystem."
+  ]
+}
