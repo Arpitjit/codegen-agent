@@ -1167,6 +1167,7 @@ Rules:
 - Do not rewrite unrelated files.
 - Do not change manifest.json or plan.json.
 - Do not invent a new architecture; repair consistency between existing files.
+- For frontend CSS validation failures, either add complete CSS definitions for the JSX class names or change JSX to use classes that already exist. Prefer preserving the preview design and adding missing semantic CSS.
 - Every changed filePath must already exist in the project files below unless the verification error clearly requires a missing file.
 - Content must be complete replacement file content, not a diff.
 - Always provide generationFeedback, even if changes is empty.
@@ -1677,6 +1678,9 @@ function extractJsxClassNames(content) {
 
   for (const match of content.matchAll(/className\s*=\s*{([^}]+)}/g)) {
     const expression = match[1];
+    if (expression.trim().startsWith("`")) {
+      continue;
+    }
     for (const literal of expression.matchAll(/["'`]([^"'`]+)["'`]/g)) {
       classes.push(...splitClassTokens(literal[1]));
     }
@@ -1690,7 +1694,18 @@ function splitClassTokens(value) {
     .split(/\s+/)
     .map((token) => token.trim())
     .filter(Boolean)
-    .filter((token) => !/[${};()]/.test(token));
+    .filter((token) => !/[${};()]/.test(token))
+    .filter(isClassTokenCandidate);
+}
+
+function isClassTokenCandidate(token) {
+  if (token.length < 2) {
+    return false;
+  }
+  if (["==", "===", "!=", "!==", "?", ":", "&&", "||", "=>"].includes(token)) {
+    return false;
+  }
+  return /^-?[_a-zA-Z][\w:-]*$/.test(token);
 }
 
 function cssClassSelectorName(className) {
