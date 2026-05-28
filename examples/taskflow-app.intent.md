@@ -62,7 +62,12 @@ Implementation requirements:
 - Include README usage notes.
 
 Preview requirements:
-- The preview should show the intended final app experience.
+- The preview should show the intended final app experience as a static visual mockup.
+- The preview must be one self-contained static HTML document using inline CSS.
+- The preview may use tiny inline plain JavaScript only for cosmetic tab/filter state if necessary.
+- Do not use React, JSX, Babel, CDN scripts, external libraries, package installs, remote assets, or API calls in the preview.
+- The preview should visually demonstrate the final app, not implement full create/edit/delete/localStorage logic.
 - Include realistic sample projects and tasks.
-- Show summary cards, the create-task form, filters, search, and task list.
+- Show static sample summary cards, the create-task form, filters, search, and task list.
 - The preview should look modern and polished enough to guide the final React implementation.
+- The final generated React app should implement the real interactions and localStorage behavior.
