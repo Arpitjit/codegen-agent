@@ -100,6 +100,12 @@ Generate a full TaskFlow productivity app with localStorage:
 ./scripts/generate-taskflow-app.sh
 ```
 
+Generate a recipe discovery app using TheMealDB:
+
+```bash
+./scripts/generate-recipe-explorer-app.sh
+```
+
 This uses the frontend-only `react-vite-ts` template. The generated preview is kept inside the final app and passed back into the manifest, planning, and file-generation stages as the frontend visual contract.
 
 The main `generate` command also creates an intent-driven preview by default before final code generation. The preview is written inside the generated project:
