@@ -409,14 +409,18 @@ Return JSON:
 
 Rules:
 - Generate exactly one self-contained index.html file.
-- Use inline CSS and optional inline JavaScript only.
-- Do not require a build step, package install, API server, external CSS, or local assets.
+- The preview is a static visual mockup. It should demonstrate the intended experience, not implement the full production application.
+- Use inline CSS only. Use tiny inline plain JavaScript only for cosmetic UI state such as selected tabs, filters, or mock toggles.
+- Do not use React, JSX, Babel, TypeScript, framework runtime code, module scripts, CDN scripts, external libraries, package installs, API calls, remote assets, external CSS, or local assets.
+- Do not include script tags that load remote resources.
+- Do not require a build step, package install, API server, internet access, external CSS, or local assets.
 - The preview must reflect the user's intent, domain, audience, data objects, workflows, and tone.
 - If the intent is backend/API-focused, create a useful product/API preview page showing routes, resources, sample payloads, architecture, and operational status panels.
 - If the intent is UI/full-stack-focused, create a polished static mockup of the likely user interface.
 - Use a modern, intentional color system suited to the product domain. Avoid plain default colors, generic wireframe styling, and one-note palettes.
 - Make the preview visually polished enough for stakeholder review: strong hierarchy, refined spacing, responsive layout, accessible contrast, and tasteful depth or texture when useful.
 - Include realistic labels, sections, and sample data from the intent.
+- If the final app will be interactive, show realistic static examples of those states instead of implementing full app logic in the preview.
 - Keep it responsive for desktop and mobile.
 - Do not use markdown fences.
 - Do not include prose outside JSON.
